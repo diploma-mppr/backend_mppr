@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/models"
 	"github.com/jackc/pgx"
 )
@@ -14,37 +13,36 @@ func NewRepositoryTask(db *pgx.ConnPool) *RepositoryTask {
 	return &RepositoryTask{DB: db}
 }
 
-//func (r *RepositoryTask) GetData() (data models.DataDb, err error) {
-//	err = r.DB.QueryRow(
-//		`select id, name, var1, var2, var3 from data where id=1`,
-//	).Scan(
-//		&data.Id,
-//		&data.Name,
-//		&data.Var1,
-//		&data.Var2,
-//		&data.Var3)
-//	fmt.Println(data)
-//	fmt.Println(err)
-//	return
-//}
-
-func (r *RepositoryTask) SetData(data models.DataDb) (data1 models.DataDb, err error) {
-	err = r.DB.QueryRow(
-		`insert into pareto (name, var1, var2, var3) values ($1, $2, $3, $4)
-			returning id, name, var1, var2, var3;`,
-		data.Name, data.Var1, data.Var2, data.Var3,
+func (r *RepositoryTask) GetData(id int) (*models.DataDb, error) {
+	DataResponse := &models.DataDb{}
+	err := r.DB.QueryRow(
+		`select id, name, var1, var2, var3 from DataResponse where id=$1`, id,
 	).Scan(
-		&data1.Id,
-		&data1.Name,
-		&data1.Var1,
-		&data1.Var2,
-		&data1.Var3,
+		&DataResponse.Id,
+		&DataResponse.Name,
+		&DataResponse.Var1,
+		&DataResponse.Var2,
+		&DataResponse.Var3,
 	)
-	fmt.Println("repository", err)
 	if err != nil {
-		return models.DataDb{}, err
+		return nil, err
+	}
+	return DataResponse, nil
+}
+
+func (r *RepositoryTask) SetData(DataRequest *models.DataDb) (*models.DataDb, error) {
+	DataResponse := &models.DataDb{}
+	sql := `insert into pareto (name, var1, var2, var3) values ($1, $2, $3, $4) returning id, name, var1, var2, var3;`
+	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Var1, DataRequest.Var2, DataRequest.Var3).Scan(
+		&DataResponse.Id,
+		&DataResponse.Name,
+		&DataResponse.Var1,
+		&DataResponse.Var2,
+		&DataResponse.Var3,
+	)
+	if err != nil {
+		return nil, err
 	}
 
-	fmt.Println(data1)
-	return
+	return DataResponse, nil
 }

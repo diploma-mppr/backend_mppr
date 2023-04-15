@@ -2,49 +2,68 @@ package task
 
 import (
 	"encoding/json"
-	"fmt"
-	"gitgub.com/diploma-mppr/backend_mppr/internal/app/models"
+	"github.com/tp-study-ai/backend/internal/app/models"
 )
 
-type UcaseTask struct {
+type UseCaseTask struct {
 	Repo Repository
 }
 
-func NewUcaseTask(TaskRepo Repository) *UcaseTask {
-	return &UcaseTask{
+func NewUseCaseTask(TaskRepo Repository) *UseCaseTask {
+	return &UseCaseTask{
 		Repo: TaskRepo,
 	}
 }
 
-//func (u *UcaseTask) GetTask() (Task models.DataJson, err error) {
-//	Task, err = u.Repo.GetTask()
-//
-//	if err != nil {
-//		return
-//	}
-//	return
-//}
-
-func (u *UcaseTask) SetData(TaskRequest models.DataJson) (*models.DataJson, error) {
-	fmt.Println("usecase", TaskRequest)
-	var1, err := json.Marshal(models.Float64Json{MyFloat: TaskRequest.Var1})
-	fmt.Println("usecase", var1, err)
-	if err != nil {
-		return nil, err
-	}
-	var2, err := json.Marshal(models.Float64Json{MyFloat: TaskRequest.Var2})
-	fmt.Println("usecase", var2, err)
-	if err != nil {
-		return nil, err
-	}
-	var3, err := json.Marshal(models.Float64Json{MyFloat: TaskRequest.Var3})
-	fmt.Println("usecase", var3, err)
+func (u *UseCaseTask) GetData(id int) (*models.DataJson, error) {
+	Data, err := u.Repo.GetData(id)
 	if err != nil {
 		return nil, err
 	}
 
-	Task, err := u.Repo.SetData(models.DataDb{
-		Name: TaskRequest.Name,
+	var var11 models.Float64Json
+	err = json.Unmarshal(Data.Var1, &var11)
+	if err != nil {
+		return nil, err
+	}
+	var var21 models.Float64Json
+	err = json.Unmarshal(Data.Var2, &var21)
+	if err != nil {
+		return nil, err
+	}
+	var var31 models.Float64Json
+	err = json.Unmarshal(Data.Var3, &var31)
+	if err != nil {
+		return nil, err
+	}
+
+	DataResponse := &models.DataJson{
+		Id:   Data.Id,
+		Name: Data.Name,
+		Var1: var11.MyFloat,
+		Var2: var21.MyFloat,
+		Var3: var31.MyFloat,
+	}
+
+	return DataResponse, nil
+}
+
+func (u *UseCaseTask) SetData(DataRequest *models.DataJson) (*models.DataJson, error) {
+	var1, err := json.Marshal(models.Float64Json{MyFloat: DataRequest.Var1})
+	if err != nil {
+		return nil, err
+	}
+	var2, err := json.Marshal(models.Float64Json{MyFloat: DataRequest.Var2})
+	if err != nil {
+		return nil, err
+	}
+	var3, err := json.Marshal(models.Float64Json{MyFloat: DataRequest.Var3})
+	if err != nil {
+		return nil, err
+	}
+
+	Data, err := u.Repo.SetData(&models.DataDb{
+		Name: DataRequest.Name,
 		Var1: var1,
 		Var2: var2,
 		Var3: var3,
@@ -52,33 +71,30 @@ func (u *UcaseTask) SetData(TaskRequest models.DataJson) (*models.DataJson, erro
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("usecase", Task)
 
 	var var11 models.Float64Json
-	err = json.Unmarshal(Task.Var1, &var11)
+	err = json.Unmarshal(Data.Var1, &var11)
 	if err != nil {
 		return nil, err
 	}
 	var var21 models.Float64Json
-	err = json.Unmarshal(Task.Var2, &var21)
+	err = json.Unmarshal(Data.Var2, &var21)
 	if err != nil {
 		return nil, err
 	}
 	var var31 models.Float64Json
-	err = json.Unmarshal(Task.Var3, &var31)
+	err = json.Unmarshal(Data.Var3, &var31)
 	if err != nil {
 		return nil, err
 	}
 
-	TaskResponse := &models.DataJson{
-		Id:   Task.Id,
-		Name: Task.Name,
+	DataResponse := &models.DataJson{
+		Id:   Data.Id,
+		Name: Data.Name,
 		Var1: var11.MyFloat,
 		Var2: var21.MyFloat,
 		Var3: var31.MyFloat,
 	}
 
-	fmt.Println("usecase", TaskResponse)
-
-	return TaskResponse, nil
+	return DataResponse, nil
 }
