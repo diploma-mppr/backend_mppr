@@ -19,25 +19,26 @@ func NewHandlerTask(ucase Ucase) *HandlerTask {
 	}
 }
 
-func (h HandlerTask) GetData(ctx echo.Context) error {
-	task, err := h.Ucase.GetData()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	result, _ := json.Marshal(task)
-	ctx.Response().Header().Add(echo.HeaderContentLength, strconv.Itoa(len(result)))
-	return ctx.JSONBlob(http.StatusOK, result)
-}
+//func (h HandlerTask) GetData(ctx echo.Context) error {
+//	task, err := h.Ucase.GetData()
+//	if err != nil {
+//		fmt.Println(err.Error())
+//	}
+//
+//	result, _ := json.Marshal(task)
+//	ctx.Response().Header().Add(echo.HeaderContentLength, strconv.Itoa(len(result)))
+//	return ctx.JSONBlob(http.StatusOK, result)
+//}
 
 func (h HandlerTask) SetData(ctx echo.Context) error {
-	data := models.DataReq{}
+	data := models.DataJson{}
 	if err := ctx.Bind(&data); err != nil {
 		fmt.Println(err.Error())
 	}
 
+	fmt.Println(data)
+
 	task, err := h.Ucase.SetData(data)
-	//task, err := h.Ucase.GetTask()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
