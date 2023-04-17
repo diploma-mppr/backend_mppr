@@ -1,4 +1,4 @@
-module github.com/tp-study-ai/backend
+module gitgub.com/diploma-mppr/backend_mppr
 
 go 1.19
 

@@ -1,18 +1,18 @@
 package models
 
-type DataDb struct {
+type ParetoDb struct {
 	Id   int    `db:"id"`
 	Name string `db:"name"`
-	Var1 []byte `db:"var1"`
-	Var2 []byte `db:"var2"`
-	Var3 []byte `db:"var3"`
+	Data []byte `db:"data"`
 }
 
-type Float64Json struct {
-	MyFloat []float64 `json:"my_float"`
+type Pareto struct {
+	Var1 []float64 `json:"var_1"`
+	Var2 []float64 `json:"var_2"`
+	Var3 []float64 `json:"var_3"`
 }
 
-type DataJson struct {
+type ParetoJson struct {
 	Id   int       `json:"id"`
 	Name string    `json:"name"`
 	Var1 []float64 `json:"var1"`
