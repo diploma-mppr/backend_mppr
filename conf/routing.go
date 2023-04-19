@@ -1,15 +1,18 @@
 package conf
 
 import (
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/auth/AuthHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/baseCriteria/BaseCriteriaHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/borda/BordaHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/data/DataHandler"
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/middleware"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/nanson/NansonHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/pairComparisonCriteria/PairComparisonCriteriaHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/pareto/ParetoHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/pointScore/PointScoreHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/weightedSum/WeightedSumHandler"
 	"github.com/labstack/echo/v4"
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
 
 type ServerHandlers struct {
@@ -21,9 +24,21 @@ type ServerHandlers struct {
 	HandlerBorda                  *BordaHandler.HandlerBorda
 	HandlerNanson                 *NansonHandler.HandlerNanson
 	HandlerWeightedSum            *WeightedSumHandler.HandlerWeightedSum
+	AuthHandler                   *AuthHandler.HandlerAuth
 }
 
-func (sh *ServerHandlers) ConfigureRouting(router *echo.Echo) {
+func (sh *ServerHandlers) ConfigureRouting(router *echo.Echo, mw *middleware.CommonMiddleware) {
+	router.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
+		AllowCredentials: true,
+		AllowOrigins:     []string{"https://study-ai.ru/"},
+		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowMethods:     []string{echo.GET, echo.POST},
+		MaxAge:           86400,
+	}))
+	mwChain := []echo.MiddlewareFunc{
+		mw.AuthMiddleware,
+	}
+
 	router.GET("/api/get_all", sh.HandlerData.GetAll)
 	//pareto
 	router.GET("/api/get_pareto", sh.HandlerPareto.GetPareto)
@@ -60,5 +75,9 @@ func (sh *ServerHandlers) ConfigureRouting(router *echo.Echo) {
 	router.POST("/api/set_weighted_sum", sh.HandlerWeightedSum.SetWeightedSum)
 	router.POST("/api/update_weighted_sum", sh.HandlerWeightedSum.UpdateWeightedSum)
 	router.POST("/api/delete_weighted_sum", sh.HandlerWeightedSum.DeleteWeightedSum)
-
+	// auth
+	router.POST("/api/register", sh.AuthHandler.Register, mwChain...)
+	router.POST("/api/login", sh.AuthHandler.Login, mwChain...)
+	router.GET("/api/logout", sh.AuthHandler.Logout, mwChain...)
+	router.GET("/api/get_user", sh.AuthHandler.GetUserById, mwChain...)
 }

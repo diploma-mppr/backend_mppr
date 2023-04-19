@@ -2,6 +2,9 @@ package main
 
 import (
 	"gitgub.com/diploma-mppr/backend_mppr/conf"
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/auth/AuthHandler"
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/auth/AuthRepository"
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/auth/AuthUseCase"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/baseCriteria/BaseCriteriaHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/baseCriteria/BaseCriteriaRepository"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/baseCriteria/BaseCriteriaUseCase"
@@ -11,6 +14,7 @@ import (
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/data/DataHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/data/DataRepository"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/data/DataUseCase"
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/middleware"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/nanson/NansonHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/nanson/NansonRepository"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/nanson/NansonUseCase"
@@ -27,6 +31,7 @@ import (
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/weightedSum/WeightedSumRepository"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/weightedSum/WeightedSumUseCase"
 	"gitgub.com/diploma-mppr/backend_mppr/tools"
+	"gitgub.com/diploma-mppr/backend_mppr/tools/authManager/jwtManager"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 	"log"
@@ -72,6 +77,12 @@ func main() {
 	UseCaseWeightedSum := WeightedSumUseCase.NewUseCaseWeightedSum(RepositoryWeightedSum)
 	HandlerWeightedSum := WeightedSumHandler.NewHandlerWeightedSum(UseCaseWeightedSum)
 
+	jwtManager := jwtManager.NewJwtManager()
+
+	authRepo := AuthRepository.NewRepositoryAuth(pgxManager)
+	authUcase := AuthUseCase.NewUseCaseAuth(authRepo)
+	authHandler := AuthHandler.NewHandlerAuth(authUcase, jwtManager)
+
 	router := echo.New()
 
 	serverRouting := conf.ServerHandlers{
@@ -83,9 +94,11 @@ func main() {
 		HandlerBorda:                  HandlerBorda,
 		HandlerNanson:                 HandlerNanson,
 		HandlerWeightedSum:            HandlerWeightedSum,
+		AuthHandler:                   authHandler,
 	}
 
-	serverRouting.ConfigureRouting(router)
+	comonMw := middleware.NewCommonMiddleware(jwtManager)
+	serverRouting.ConfigureRouting(router, &comonMw)
 
 	httpServ := http.Server{
 		Addr:    ":8000",
