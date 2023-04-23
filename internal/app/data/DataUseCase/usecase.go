@@ -16,8 +16,8 @@ func NewUseCaseData(Repository data.Repository) *UseCaseData {
 	}
 }
 
-func (u *UseCaseData) GetAll() (*[]models.DataDb, error) {
-	Data, err := u.Repository.GetAll()
+func (u *UseCaseData) GetAll(UserId int) (*[]models.DataDb, error) {
+	Data, err := u.Repository.GetAll(UserId)
 	if err != nil {
 		fmt.Println("UseCaseData GetAll", err)
 		return nil, err
@@ -29,8 +29,9 @@ func (u *UseCaseData) GetAll() (*[]models.DataDb, error) {
 		DataResponse = append(
 			DataResponse,
 			models.DataDb{
-				Id:   data.Id,
-				Name: data.Name,
+				Id:         data.Id,
+				MethodName: data.MethodName,
+				Name:       data.Name,
 			},
 		)
 	}

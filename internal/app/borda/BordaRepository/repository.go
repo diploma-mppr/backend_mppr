@@ -18,7 +18,7 @@ func NewRepositoryBorda(db *pgx.ConnPool) *RepositoryBorda {
 
 func (r *RepositoryBorda) GetBorda(id int) (*models.BordaDb, error) {
 	DataResponse := &models.BordaDb{}
-	sql := `select id, name, data from "tdata" where id=$1`
+	sql := `select id, name, data from "method" where id=$1`
 	err := r.DB.QueryRow(sql, id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -33,7 +33,7 @@ func (r *RepositoryBorda) GetBorda(id int) (*models.BordaDb, error) {
 
 func (r *RepositoryBorda) SetBorda(DataRequest *models.BordaDb) (*models.BordaDb, error) {
 	DataResponse := &models.BordaDb{}
-	sql := `insert into "tdata" (name, data) values ($1, $2) returning id, name, data;`
+	sql := `insert into "method" (name, data, method_name) values ($1, $2, $3, 'borda') returning id, name, data;`
 	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Data).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -49,7 +49,7 @@ func (r *RepositoryBorda) SetBorda(DataRequest *models.BordaDb) (*models.BordaDb
 
 func (r *RepositoryBorda) UpdateBorda(DataRequest *models.BordaDb) (*models.BordaDb, error) {
 	DataResponse := &models.BordaDb{}
-	sql := `UPDATE "tdata" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
+	sql := `UPDATE "method" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
 	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -64,7 +64,7 @@ func (r *RepositoryBorda) UpdateBorda(DataRequest *models.BordaDb) (*models.Bord
 }
 
 func (r *RepositoryBorda) DeleteBorda(DataRequest *models.BordaDb) error {
-	sql := `DELETE FROM "tdata" WHERE "id"=$1;`
+	sql := `DELETE FROM "method" WHERE "id"=$1;`
 	_, err := r.DB.Query(sql, DataRequest.Id)
 	if err != nil {
 		fmt.Println("RepositoryBorda DeleteBorda", err)

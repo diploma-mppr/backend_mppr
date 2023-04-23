@@ -30,7 +30,7 @@ type ServerHandlers struct {
 func (sh *ServerHandlers) ConfigureRouting(router *echo.Echo, mw *middleware.CommonMiddleware) {
 	router.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
 		AllowCredentials: true,
-		AllowOrigins:     []string{"https://study-ai.ru/"},
+		AllowOrigins:     []string{"*"},
 		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 		AllowMethods:     []string{echo.GET, echo.POST},
 		MaxAge:           86400,
@@ -39,42 +39,42 @@ func (sh *ServerHandlers) ConfigureRouting(router *echo.Echo, mw *middleware.Com
 		mw.AuthMiddleware,
 	}
 
-	router.GET("/api/get_all", sh.HandlerData.GetAll)
+	router.GET("/api/get_all", sh.HandlerData.GetAll, mwChain...)
 	//pareto
-	router.GET("/api/get_pareto", sh.HandlerPareto.GetPareto)
-	router.POST("/api/set_pareto", sh.HandlerPareto.SetPareto)
-	router.POST("/api/update_pareto", sh.HandlerPareto.UpdatePareto)
-	router.POST("/api/delete_pareto", sh.HandlerPareto.DeletePareto)
+	router.GET("/api/get_pareto", sh.HandlerPareto.GetPareto, mwChain...)
+	router.POST("/api/set_pareto", sh.HandlerPareto.SetPareto, mwChain...)
+	router.POST("/api/update_pareto", sh.HandlerPareto.UpdatePareto, mwChain...)
+	router.POST("/api/delete_pareto", sh.HandlerPareto.DeletePareto, mwChain...)
 	//basicCriteria
-	router.GET("/api/get_base_criteria", sh.HandlerBaseCriteria.GetBaseCriteria)
-	router.POST("/api/set_base_criteria", sh.HandlerBaseCriteria.SetBaseCriteria)
-	router.POST("/api/update_base_criteria", sh.HandlerBaseCriteria.UpdateBaseCriteria)
-	router.POST("/api/delete_base_criteria", sh.HandlerBaseCriteria.DeleteBaseCriteria)
+	router.GET("/api/get_base_criteria", sh.HandlerBaseCriteria.GetBaseCriteria, mwChain...)
+	router.POST("/api/set_base_criteria", sh.HandlerBaseCriteria.SetBaseCriteria, mwChain...)
+	router.POST("/api/update_base_criteria", sh.HandlerBaseCriteria.UpdateBaseCriteria, mwChain...)
+	router.POST("/api/delete_base_criteria", sh.HandlerBaseCriteria.DeleteBaseCriteria, mwChain...)
 	//pointScore
-	router.GET("/api/get_point_score", sh.HandlerPointScore.GetPointScore)
-	router.POST("/api/set_point_score", sh.HandlerPointScore.SetPointScore)
-	router.POST("/api/update_point_score", sh.HandlerPointScore.UpdatePointScore)
-	router.POST("/api/delete_point_score", sh.HandlerPointScore.DeletePointScore)
+	router.GET("/api/get_point_score", sh.HandlerPointScore.GetPointScore, mwChain...)
+	router.POST("/api/set_point_score", sh.HandlerPointScore.SetPointScore, mwChain...)
+	router.POST("/api/update_point_score", sh.HandlerPointScore.UpdatePointScore, mwChain...)
+	router.POST("/api/delete_point_score", sh.HandlerPointScore.DeletePointScore, mwChain...)
 	//pairComparisonCriteria
-	router.GET("/api/get_pair_comparison_criteria", sh.HandlerPairComparisonCriteria.GetPairComparisonCriteria)
-	router.POST("/api/set_pair_comparison_criteria", sh.HandlerPairComparisonCriteria.SetPairComparisonCriteria)
-	router.POST("/api/update_pair_comparison_criteria", sh.HandlerPairComparisonCriteria.UpdatePairComparisonCriteria)
-	router.POST("/api/delete_pair_comparison_criteria", sh.HandlerPairComparisonCriteria.DeletePairComparisonCriteria)
+	router.GET("/api/get_pair_comparison_criteria", sh.HandlerPairComparisonCriteria.GetPairComparisonCriteria, mwChain...)
+	router.POST("/api/set_pair_comparison_criteria", sh.HandlerPairComparisonCriteria.SetPairComparisonCriteria, mwChain...)
+	router.POST("/api/update_pair_comparison_criteria", sh.HandlerPairComparisonCriteria.UpdatePairComparisonCriteria, mwChain...)
+	router.POST("/api/delete_pair_comparison_criteria", sh.HandlerPairComparisonCriteria.DeletePairComparisonCriteria, mwChain...)
 	//borda
-	router.GET("/api/get_borda", sh.HandlerBorda.GetBorda)
-	router.POST("/api/set_borda", sh.HandlerBorda.SetBorda)
-	router.POST("/api/update_borda", sh.HandlerBorda.UpdateBorda)
-	router.POST("/api/delete_borda", sh.HandlerBorda.DeleteBorda)
+	router.GET("/api/get_borda", sh.HandlerBorda.GetBorda, mwChain...)
+	router.POST("/api/set_borda", sh.HandlerBorda.SetBorda, mwChain...)
+	router.POST("/api/update_borda", sh.HandlerBorda.UpdateBorda, mwChain...)
+	router.POST("/api/delete_borda", sh.HandlerBorda.DeleteBorda, mwChain...)
 	//nanson
-	router.GET("/api/get_nanson", sh.HandlerNanson.GetNanson)
-	router.POST("/api/set_nanson", sh.HandlerNanson.SetNanson)
-	router.POST("/api/update_nanson", sh.HandlerNanson.UpdateNanson)
-	router.POST("/api/delete_nanson", sh.HandlerNanson.DeleteNanson)
+	router.GET("/api/get_nanson", sh.HandlerNanson.GetNanson, mwChain...)
+	router.POST("/api/set_nanson", sh.HandlerNanson.SetNanson, mwChain...)
+	router.POST("/api/update_nanson", sh.HandlerNanson.UpdateNanson, mwChain...)
+	router.POST("/api/delete_nanson", sh.HandlerNanson.DeleteNanson, mwChain...)
 	//weightedSum
-	router.GET("/api/get_weighted_sum", sh.HandlerWeightedSum.GetWeightedSum)
-	router.POST("/api/set_weighted_sum", sh.HandlerWeightedSum.SetWeightedSum)
-	router.POST("/api/update_weighted_sum", sh.HandlerWeightedSum.UpdateWeightedSum)
-	router.POST("/api/delete_weighted_sum", sh.HandlerWeightedSum.DeleteWeightedSum)
+	router.GET("/api/get_weighted_sum", sh.HandlerWeightedSum.GetWeightedSum, mwChain...)
+	router.POST("/api/set_weighted_sum", sh.HandlerWeightedSum.SetWeightedSum, mwChain...)
+	router.POST("/api/update_weighted_sum", sh.HandlerWeightedSum.UpdateWeightedSum, mwChain...)
+	router.POST("/api/delete_weighted_sum", sh.HandlerWeightedSum.DeleteWeightedSum, mwChain...)
 	// auth
 	router.POST("/api/register", sh.AuthHandler.Register, mwChain...)
 	router.POST("/api/login", sh.AuthHandler.Login, mwChain...)

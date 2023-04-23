@@ -16,10 +16,14 @@ func NewRepositoryData(db *pgx.ConnPool) *RepositoryData {
 	}
 }
 
-func (r *RepositoryData) GetAll() (*[]models.DataDb, error) {
+func (r *RepositoryData) GetAll(UserId int) (*[]models.DataDb, error) {
 	var DataResponse []models.DataDb
-	sql := `select "id", "name" from "tdata";`
-	rows, err := r.DB.Query(sql)
+
+	var Data []interface{}
+	Data = append(Data, UserId)
+
+	sql := `select "id", "name", "method_name" from "method" where "user_id" = $1;`
+	rows, err := r.DB.Query(sql, Data...)
 	if err != nil {
 		fmt.Println("RepositoryData GetAll", err)
 		return nil, err
@@ -30,6 +34,7 @@ func (r *RepositoryData) GetAll() (*[]models.DataDb, error) {
 		var buff models.DataDb
 		err = rows.Scan(
 			&buff.Id,
+			&buff.MethodName,
 			&buff.Name,
 		)
 		if err != nil {

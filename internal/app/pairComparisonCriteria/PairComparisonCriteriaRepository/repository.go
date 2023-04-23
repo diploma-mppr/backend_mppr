@@ -18,7 +18,7 @@ func NewRepositoryPairComparisonCriteria(db *pgx.ConnPool) *RepositoryPairCompar
 
 func (r *RepositoryPairComparisonCriteria) GetPairComparisonCriteria(id int) (*models.PairComparisonCriteriaDb, error) {
 	DataResponse := &models.PairComparisonCriteriaDb{}
-	sql := `select id, name, data from "tdata" where id=$1`
+	sql := `select id, name, data from "method" where id=$1`
 	err := r.DB.QueryRow(sql, id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -33,7 +33,7 @@ func (r *RepositoryPairComparisonCriteria) GetPairComparisonCriteria(id int) (*m
 
 func (r *RepositoryPairComparisonCriteria) SetPairComparisonCriteria(DataRequest *models.PairComparisonCriteriaDb) (*models.PairComparisonCriteriaDb, error) {
 	DataResponse := &models.PairComparisonCriteriaDb{}
-	sql := `insert into "tdata" (name, data) values ($1, $2) returning id, name, data;`
+	sql := `insert into "method" (name, data, method_name) values ($1, $2, $3, 'pairComparisonCriteria') returning id, name, data;`
 	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Data).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -49,7 +49,7 @@ func (r *RepositoryPairComparisonCriteria) SetPairComparisonCriteria(DataRequest
 
 func (r *RepositoryPairComparisonCriteria) UpdatePairComparisonCriteria(DataRequest *models.PairComparisonCriteriaDb) (*models.PairComparisonCriteriaDb, error) {
 	DataResponse := &models.PairComparisonCriteriaDb{}
-	sql := `UPDATE "tdata" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
+	sql := `UPDATE "method" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
 	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -64,7 +64,7 @@ func (r *RepositoryPairComparisonCriteria) UpdatePairComparisonCriteria(DataRequ
 }
 
 func (r *RepositoryPairComparisonCriteria) DeletePairComparisonCriteria(DataRequest *models.PairComparisonCriteriaDb) error {
-	sql := `DELETE FROM "tdata" WHERE "id"=$1;`
+	sql := `DELETE FROM "method" WHERE "id"=$1;`
 	_, err := r.DB.Query(sql, DataRequest.Id)
 	if err != nil {
 		fmt.Println("RepositoryPairComparisonCriteriaDb DeletePairComparisonCriteriaDb", err)

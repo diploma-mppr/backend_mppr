@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/data"
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/middleware"
 	"gitgub.com/diploma-mppr/backend_mppr/tools"
 	"github.com/labstack/echo/v4"
+	"github.com/pkg/errors"
 	"net/http"
 	"strconv"
 )
@@ -21,7 +23,12 @@ func NewHandlerData(useCase data.UseCase) *HandlerData {
 }
 
 func (h HandlerData) GetAll(ctx echo.Context) error {
-	data, err := h.UseCase.GetAll()
+	user := middleware.GetUserFromCtx(ctx)
+	if user == nil {
+		return tools.CustomError(ctx, errors.Errorf("пользователь не в системе"), 0, "ошибка при запросе пользователя")
+	}
+
+	data, err := h.UseCase.GetAll(int(user.Id))
 	if err != nil {
 		fmt.Println("HandlerData GetAll", err)
 		return tools.CustomError(ctx, err, 0, "UseCase")

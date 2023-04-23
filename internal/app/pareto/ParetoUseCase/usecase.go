@@ -17,8 +17,8 @@ func NewUseCasePareto(Repository pareto.Repository) *UseCasePareto {
 	}
 }
 
-func (u *UseCasePareto) GetPareto(id int) (*models.ParetoJson, error) {
-	Data, err := u.Repository.GetPareto(id)
+func (u *UseCasePareto) GetPareto(id int, UserId int) (*models.ParetoJson, error) {
+	Data, err := u.Repository.GetPareto(id, UserId)
 	if err != nil {
 		fmt.Println("UseCasePareto GetPareto", err)
 		return nil, err
@@ -42,7 +42,7 @@ func (u *UseCasePareto) GetPareto(id int) (*models.ParetoJson, error) {
 	return DataResponse, nil
 }
 
-func (u *UseCasePareto) SetPareto(DataRequest *models.ParetoJson) (*models.ParetoJson, error) {
+func (u *UseCasePareto) SetPareto(DataRequest *models.ParetoJson, UserId int) (*models.ParetoJson, error) {
 	Pareto, err := json.Marshal(
 		models.Pareto{
 			Var1: DataRequest.Var1,
@@ -56,8 +56,9 @@ func (u *UseCasePareto) SetPareto(DataRequest *models.ParetoJson) (*models.Paret
 	}
 
 	Data, err := u.Repository.SetPareto(&models.ParetoDb{
-		Name: DataRequest.Name,
-		Data: Pareto,
+		UserId: UserId,
+		Name:   DataRequest.Name,
+		Data:   Pareto,
 	})
 	if err != nil {
 		fmt.Println("UseCasePareto SetPareto", err)

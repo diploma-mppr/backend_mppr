@@ -33,7 +33,7 @@ func (r *RepositoryNanson) GetNanson(id int) (*models.NansonDb, error) {
 
 func (r *RepositoryNanson) SetNanson(DataRequest *models.NansonDb) (*models.NansonDb, error) {
 	DataResponse := &models.NansonDb{}
-	sql := `insert into "tdata" (name, data) values ($1, $2) returning id, name, data;`
+	sql := `insert into "method" (user_id, name, data, method_name) values ($1, $2, $3, 'nanson') returning id, name, data;`
 	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Data).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -49,7 +49,7 @@ func (r *RepositoryNanson) SetNanson(DataRequest *models.NansonDb) (*models.Nans
 
 func (r *RepositoryNanson) UpdateNanson(DataRequest *models.NansonDb) (*models.NansonDb, error) {
 	DataResponse := &models.NansonDb{}
-	sql := `UPDATE "tdata" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
+	sql := `UPDATE "method" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
 	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -64,7 +64,7 @@ func (r *RepositoryNanson) UpdateNanson(DataRequest *models.NansonDb) (*models.N
 }
 
 func (r *RepositoryNanson) DeleteNanson(DataRequest *models.NansonDb) error {
-	sql := `DELETE FROM "tdata" WHERE "id"=$1;`
+	sql := `DELETE FROM "method" WHERE "id"=$1;`
 	_, err := r.DB.Query(sql, DataRequest.Id)
 	if err != nil {
 		fmt.Println("RepositoryNanson DeleteNanson", err)

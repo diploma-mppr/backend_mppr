@@ -17,8 +17,8 @@ func NewUseCaseBaseCriteria(Repository baseCriteria.Repository) *UseCaseBaseCrit
 	}
 }
 
-func (u *UseCaseBaseCriteria) GetBaseCriteria(id int) (*models.BaseCriteriaJson, error) {
-	Data, err := u.Repository.GetBaseCriteria(id)
+func (u *UseCaseBaseCriteria) GetBaseCriteria(id int, UserId int) (*models.BaseCriteriaJson, error) {
+	Data, err := u.Repository.GetBaseCriteria(id, UserId)
 	if err != nil {
 		fmt.Println("UseCasePareto GetPareto", err)
 		return nil, err
@@ -40,7 +40,7 @@ func (u *UseCaseBaseCriteria) GetBaseCriteria(id int) (*models.BaseCriteriaJson,
 	return DataResponse, nil
 }
 
-func (u *UseCaseBaseCriteria) SetBaseCriteria(DataRequest *models.BaseCriteriaJson) (*models.BaseCriteriaJson, error) {
+func (u *UseCaseBaseCriteria) SetBaseCriteria(DataRequest *models.BaseCriteriaJson, UserId int) (*models.BaseCriteriaJson, error) {
 	BasicCriteria, err := json.Marshal(
 		models.BaseCriteria{
 			Var1: DataRequest.Var1,
@@ -52,8 +52,9 @@ func (u *UseCaseBaseCriteria) SetBaseCriteria(DataRequest *models.BaseCriteriaJs
 	}
 
 	Data, err := u.Repository.SetBaseCriteria(&models.BaseCriteriaDb{
-		Name: DataRequest.Name,
-		Data: BasicCriteria,
+		UserId: UserId,
+		Name:   DataRequest.Name,
+		Data:   BasicCriteria,
 	})
 	if err != nil {
 		fmt.Println("UseCasePareto SetPareto", err)

@@ -18,7 +18,7 @@ func NewRepositoryPointScore(db *pgx.ConnPool) *RepositoryPointScore {
 
 func (r *RepositoryPointScore) GetPointScore(id int) (*models.PointScoreDb, error) {
 	DataResponse := &models.PointScoreDb{}
-	sql := `select id, name, data from "tdata" where id=$1`
+	sql := `select id, name, data from "method" where id=$1`
 	err := r.DB.QueryRow(sql, id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -33,7 +33,7 @@ func (r *RepositoryPointScore) GetPointScore(id int) (*models.PointScoreDb, erro
 
 func (r *RepositoryPointScore) SetPointScore(DataRequest *models.PointScoreDb) (*models.PointScoreDb, error) {
 	DataResponse := &models.PointScoreDb{}
-	sql := `insert into "tdata" (name, data) values ($1, $2) returning id, name, data;`
+	sql := `insert into "method" (name, data, method_name) values ($1, $2, $3, 'pointScore') returning id, name, data;`
 	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Data).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -49,7 +49,7 @@ func (r *RepositoryPointScore) SetPointScore(DataRequest *models.PointScoreDb) (
 
 func (r *RepositoryPointScore) UpdatePointScore(DataRequest *models.PointScoreDb) (*models.PointScoreDb, error) {
 	DataResponse := &models.PointScoreDb{}
-	sql := `UPDATE "tdata" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
+	sql := `UPDATE "method" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
 	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
@@ -64,7 +64,7 @@ func (r *RepositoryPointScore) UpdatePointScore(DataRequest *models.PointScoreDb
 }
 
 func (r *RepositoryPointScore) DeletePointScore(DataRequest *models.PointScoreDb) error {
-	sql := `DELETE FROM "tdata" WHERE "id"=$1;`
+	sql := `DELETE FROM "method" WHERE "id"=$1;`
 	_, err := r.DB.Query(sql, DataRequest.Id)
 	if err != nil {
 		fmt.Println("RepositoryPareto DeletePointScore", err)
