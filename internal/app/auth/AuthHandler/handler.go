@@ -16,6 +16,10 @@ import (
 	"time"
 )
 
+const (
+	tokenCookieKey = "token"
+)
+
 type HandlerAuth struct {
 	UseCase     auth.UseCase
 	AuthManager authManager.AuthManager
@@ -30,14 +34,14 @@ func NewHandlerAuth(usecase auth.UseCase, authManager authManager.AuthManager) *
 
 func createTokenCookie(token string, domen string, exp time.Duration) *http.Cookie {
 	return &http.Cookie{
-		Name:     "token",
+		Name:     tokenCookieKey,
 		Value:    token,
 		HttpOnly: true,
 		Expires:  time.Now().Add(exp),
 		Domain:   domen,
 		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
-		Secure:   false,
+		//SameSite: http.SameSiteNoneMode,
+		Secure: false,
 	}
 }
 
