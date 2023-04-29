@@ -23,6 +23,7 @@ func NewHandlerData(useCase data.UseCase) *HandlerData {
 }
 
 func (h HandlerData) GetAll(ctx echo.Context) error {
+	fmt.Println(ctx.Request().Cookie("token"))
 	user := middleware.GetUserFromCtx(ctx)
 	if user == nil {
 		return tools.CustomError(ctx, errors.Errorf("пользователь не в системе"), 0, "ошибка при запросе пользователя")

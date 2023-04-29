@@ -2,6 +2,7 @@ package AuthHandler
 
 import (
 	"encoding/json"
+	"fmt"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/auth"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/middleware"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/models"
@@ -13,10 +14,6 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-)
-
-const (
-	tokenCookieKey = "token"
 )
 
 type HandlerAuth struct {
@@ -33,14 +30,14 @@ func NewHandlerAuth(usecase auth.UseCase, authManager authManager.AuthManager) *
 
 func createTokenCookie(token string, domen string, exp time.Duration) *http.Cookie {
 	return &http.Cookie{
-		Name:     tokenCookieKey,
+		Name:     "token",
 		Value:    token,
 		HttpOnly: true,
 		Expires:  time.Now().Add(exp),
 		Domain:   domen,
 		Path:     "/",
 		SameSite: http.SameSiteNoneMode,
-		Secure:   true,
+		Secure:   false,
 	}
 }
 
@@ -59,6 +56,8 @@ func (h HandlerAuth) Register(ctx echo.Context) error {
 		return tools.CustomError(ctx, err, 1, "битый json на авторизацию")
 	}
 
+	fmt.Println(UserRequest)
+
 	User, err := h.UseCase.Register(&models.UserJson{Username: UserRequest.Username, Password: UserRequest.Password})
 	if err != nil {
 		return tools.CustomError(ctx, err, 2, "ошибка при регистрации")
@@ -70,9 +69,6 @@ func (h HandlerAuth) Register(ctx echo.Context) error {
 	}
 
 	host, _, _ := net.SplitHostPort(ctx.Request().Host)
-	//if host == "127.0.0.1" {
-	//	host = "localhost"
-	//}
 	tokenCookie := createTokenCookie(token, host, h.AuthManager.GetEpiryTime())
 
 	ctx.SetCookie(tokenCookie)
