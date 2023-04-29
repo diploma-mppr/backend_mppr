@@ -66,10 +66,13 @@ func (h HandlerAuth) Register(ctx echo.Context) error {
 
 	token, err := h.AuthManager.CreateToken(authManager.NewTokenPayload(User.Id)) // подставить id пользователя полученного из usecase
 	if err != nil {
-		return tools.CustomError(ctx, err, 2, "отрыгнул jsw token или что то связанное с ним")
+		return tools.CustomError(ctx, err, 3, "отрыгнул jsw token или что то связанное с ним")
 	}
 
 	host, _, _ := net.SplitHostPort(ctx.Request().Host)
+	//if host == "127.0.0.1" {
+	//	host = "localhost"
+	//}
 	tokenCookie := createTokenCookie(token, host, h.AuthManager.GetEpiryTime())
 
 	ctx.SetCookie(tokenCookie)
