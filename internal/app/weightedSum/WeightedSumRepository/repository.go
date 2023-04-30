@@ -16,10 +16,10 @@ func NewRepositoryWeightedSum(db *pgx.ConnPool) *RepositoryWeightedSum {
 	}
 }
 
-func (r *RepositoryWeightedSum) GetWeightedSum(id int) (*models.WeightedSumDb, error) {
+func (r *RepositoryWeightedSum) GetWeightedSum(id int, UserId int) (*models.WeightedSumDb, error) {
 	DataResponse := &models.WeightedSumDb{}
-	sql := `select id, name, data from "method" where id=$1`
-	err := r.DB.QueryRow(sql, id).Scan(
+	sql := `select id, name, data from "method" where id=$1 and user_id = $2`
+	err := r.DB.QueryRow(sql, id, UserId).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,
@@ -33,8 +33,8 @@ func (r *RepositoryWeightedSum) GetWeightedSum(id int) (*models.WeightedSumDb, e
 
 func (r *RepositoryWeightedSum) SetWeightedSum(DataRequest *models.WeightedSumDb) (*models.WeightedSumDb, error) {
 	DataResponse := &models.WeightedSumDb{}
-	sql := `insert into "method" (name, data, method_name) values ($1, $2, $3, 'weightedSum') returning id, name, data;`
-	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Data).Scan(
+	sql := `insert into "method" (user_id, name, data, method_name) values ($1, $2, $3, 'weightedSum') returning id, name, data;`
+	err := r.DB.QueryRow(sql, DataRequest.UserId, DataRequest.Name, DataRequest.Data).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,

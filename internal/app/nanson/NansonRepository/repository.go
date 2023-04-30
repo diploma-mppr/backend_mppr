@@ -16,10 +16,10 @@ func NewRepositoryNanson(db *pgx.ConnPool) *RepositoryNanson {
 	}
 }
 
-func (r *RepositoryNanson) GetNanson(id int) (*models.NansonDb, error) {
+func (r *RepositoryNanson) GetNanson(id int, UserId int) (*models.NansonDb, error) {
 	DataResponse := &models.NansonDb{}
-	sql := `select id, name, data from "tdata" where id=$1`
-	err := r.DB.QueryRow(sql, id).Scan(
+	sql := `select id, name, data from "method" where id=$1 and user_id = $2`
+	err := r.DB.QueryRow(sql, id, UserId).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,
@@ -33,8 +33,8 @@ func (r *RepositoryNanson) GetNanson(id int) (*models.NansonDb, error) {
 
 func (r *RepositoryNanson) SetNanson(DataRequest *models.NansonDb) (*models.NansonDb, error) {
 	DataResponse := &models.NansonDb{}
-	sql := `insert into "method" (user_id, name, data, method_name) values ($1, $2, $3, 'nanson') returning id, name, data;`
-	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Data).Scan(
+	sql := `insert into "method" ("user_id", "name", "data", "method_name") values ($1, $2, $3, 'nanson') returning id, name, data;`
+	err := r.DB.QueryRow(sql, DataRequest.UserId, DataRequest.Name, DataRequest.Data).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,

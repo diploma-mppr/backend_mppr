@@ -3,10 +3,12 @@ package NansonHandler
 import (
 	"encoding/json"
 	"fmt"
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/middleware"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/models"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/nanson"
 	"gitgub.com/diploma-mppr/backend_mppr/tools"
 	"github.com/labstack/echo/v4"
+	"github.com/pkg/errors"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -23,6 +25,11 @@ func NewHandlerNanson(useCase nanson.UseCase) *HandlerNanson {
 }
 
 func (h HandlerNanson) GetNanson(ctx echo.Context) error {
+	user := middleware.GetUserFromCtx(ctx)
+	if user == nil {
+		return tools.CustomError(ctx, errors.Errorf("пользователь не в системе"), 0, "ошибка при запросе пользователя")
+	}
+
 	id := ctx.QueryParam("id")
 	fmt.Println("Param: ", id, " ", reflect.TypeOf(id))
 	che, err := strconv.ParseInt(id, 10, 64)
@@ -31,7 +38,7 @@ func (h HandlerNanson) GetNanson(ctx echo.Context) error {
 		return tools.CustomError(ctx, err, 0, "ParseInt")
 	}
 
-	data, err := h.UseCase.GetNanson(int(che))
+	data, err := h.UseCase.GetNanson(int(che), int(user.Id))
 	if err != nil {
 		fmt.Println("HandlerNanson GetNanson", err)
 		return tools.CustomError(ctx, err, 1, "UseCase")
@@ -48,6 +55,11 @@ func (h HandlerNanson) GetNanson(ctx echo.Context) error {
 }
 
 func (h HandlerNanson) SetNanson(ctx echo.Context) error {
+	user := middleware.GetUserFromCtx(ctx)
+	if user == nil {
+		return tools.CustomError(ctx, errors.Errorf("пользователь не в системе"), 0, "ошибка при запросе пользователя")
+	}
+
 	data := models.NansonJson{}
 	if err := ctx.Bind(&data); err != nil {
 		fmt.Println("HandlerNanson SetNanson", err)
@@ -56,7 +68,7 @@ func (h HandlerNanson) SetNanson(ctx echo.Context) error {
 
 	fmt.Println(data)
 
-	task, err := h.UseCase.SetNanson(&data)
+	task, err := h.UseCase.SetNanson(&data, int(user.Id))
 	if err != nil {
 		fmt.Println("HandlerNanson SetNanson", err)
 		tools.CustomError(ctx, err, 1, "Usecase")

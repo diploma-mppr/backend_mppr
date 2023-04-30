@@ -16,10 +16,10 @@ func NewRepositoryBorda(db *pgx.ConnPool) *RepositoryBorda {
 	}
 }
 
-func (r *RepositoryBorda) GetBorda(id int) (*models.BordaDb, error) {
+func (r *RepositoryBorda) GetBorda(id int, UserId int) (*models.BordaDb, error) {
 	DataResponse := &models.BordaDb{}
-	sql := `select id, name, data from "method" where id=$1`
-	err := r.DB.QueryRow(sql, id).Scan(
+	sql := `select "id", "name", "data" from "method" where id=$1 and "user_id" = $2`
+	err := r.DB.QueryRow(sql, id, UserId).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,
@@ -33,8 +33,8 @@ func (r *RepositoryBorda) GetBorda(id int) (*models.BordaDb, error) {
 
 func (r *RepositoryBorda) SetBorda(DataRequest *models.BordaDb) (*models.BordaDb, error) {
 	DataResponse := &models.BordaDb{}
-	sql := `insert into "method" (name, data, method_name) values ($1, $2, $3, 'borda') returning id, name, data;`
-	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Data).Scan(
+	sql := `insert into "method" ("user_id", "name", "data", "method_name") values ($1, $2, $3, 'borda') returning id, name, data;`
+	err := r.DB.QueryRow(sql, DataRequest.UserId, DataRequest.Name, DataRequest.Data).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,

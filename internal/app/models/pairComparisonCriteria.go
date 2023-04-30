@@ -1,9 +1,10 @@
 package models
 
 type PairComparisonCriteriaDb struct {
-	Id   int    `db:"id"`
-	Name string `db:"name"`
-	Data []byte `db:"data"`
+	Id     int    `db:"id"`
+	UserId int    `db:"user_id"`
+	Name   string `db:"name"`
+	Data   []byte `db:"data"`
 }
 
 type PairComparisonCriteria struct {

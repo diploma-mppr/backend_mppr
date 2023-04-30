@@ -16,10 +16,10 @@ func NewRepositoryPointScore(db *pgx.ConnPool) *RepositoryPointScore {
 	}
 }
 
-func (r *RepositoryPointScore) GetPointScore(id int) (*models.PointScoreDb, error) {
+func (r *RepositoryPointScore) GetPointScore(id int, UserId int) (*models.PointScoreDb, error) {
 	DataResponse := &models.PointScoreDb{}
-	sql := `select id, name, data from "method" where id=$1`
-	err := r.DB.QueryRow(sql, id).Scan(
+	sql := `select id, name, data from "method" where id=$1 and user_id = $2`
+	err := r.DB.QueryRow(sql, id, UserId).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,
@@ -33,8 +33,8 @@ func (r *RepositoryPointScore) GetPointScore(id int) (*models.PointScoreDb, erro
 
 func (r *RepositoryPointScore) SetPointScore(DataRequest *models.PointScoreDb) (*models.PointScoreDb, error) {
 	DataResponse := &models.PointScoreDb{}
-	sql := `insert into "method" (name, data, method_name) values ($1, $2, $3, 'pointScore') returning id, name, data;`
-	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Data).Scan(
+	sql := `insert into "method" ("user_id", "name", "data", "method_name") values ($1, $2, $3, 'pointScore') returning id, name, data;`
+	err := r.DB.QueryRow(sql, DataRequest.UserId, DataRequest.Name, DataRequest.Data).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,

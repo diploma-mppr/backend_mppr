@@ -17,8 +17,8 @@ func NewUseCasePairComparisonCriteria(Repository pairComparisonCriteria.Reposito
 	}
 }
 
-func (u *UseCasePairComparisonCriteria) GetPairComparisonCriteria(id int) (*models.PairComparisonCriteriaJson, error) {
-	Data, err := u.Repository.GetPairComparisonCriteria(id)
+func (u *UseCasePairComparisonCriteria) GetPairComparisonCriteria(id int, UserId int) (*models.PairComparisonCriteriaJson, error) {
+	Data, err := u.Repository.GetPairComparisonCriteria(id, UserId)
 	if err != nil {
 		fmt.Println("UseCasePairComparisonCriteria GetPairComparisonCriteria", err)
 		return nil, err
@@ -49,7 +49,7 @@ func (u *UseCasePairComparisonCriteria) GetPairComparisonCriteria(id int) (*mode
 	return DataResponse, nil
 }
 
-func (u *UseCasePairComparisonCriteria) SetPairComparisonCriteria(DataRequest *models.PairComparisonCriteriaJson) (*models.PairComparisonCriteriaJson, error) {
+func (u *UseCasePairComparisonCriteria) SetPairComparisonCriteria(DataRequest *models.PairComparisonCriteriaJson, UserId int) (*models.PairComparisonCriteriaJson, error) {
 	PairComparisonCriteria, err := json.Marshal(
 		models.PairComparisonCriteria{
 			Var1:  DataRequest.Var1,
@@ -70,8 +70,9 @@ func (u *UseCasePairComparisonCriteria) SetPairComparisonCriteria(DataRequest *m
 	}
 
 	Data, err := u.Repository.SetPairComparisonCriteria(&models.PairComparisonCriteriaDb{
-		Name: DataRequest.Name,
-		Data: PairComparisonCriteria,
+		UserId: UserId,
+		Name:   DataRequest.Name,
+		Data:   PairComparisonCriteria,
 	})
 	if err != nil {
 		fmt.Println("UseCasePairComparisonCriteria SetPairComparisonCriteria", err)

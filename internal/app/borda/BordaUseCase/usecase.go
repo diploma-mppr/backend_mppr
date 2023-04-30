@@ -17,8 +17,8 @@ func NewUseCaseBorda(Repository borda.Repository) *UseCaseBorda {
 	}
 }
 
-func (u *UseCaseBorda) GetBorda(id int) (*models.BordaJson, error) {
-	Data, err := u.Repository.GetBorda(id)
+func (u *UseCaseBorda) GetBorda(id int, UserId int) (*models.BordaJson, error) {
+	Data, err := u.Repository.GetBorda(id, UserId)
 	if err != nil {
 		fmt.Println("UseCaseBorda GetBorda", err)
 		return nil, err
@@ -43,7 +43,7 @@ func (u *UseCaseBorda) GetBorda(id int) (*models.BordaJson, error) {
 	return DataResponse, nil
 }
 
-func (u *UseCaseBorda) SetBorda(DataRequest *models.BordaJson) (*models.BordaJson, error) {
+func (u *UseCaseBorda) SetBorda(DataRequest *models.BordaJson, UserId int) (*models.BordaJson, error) {
 	Borda, err := json.Marshal(
 		models.Borda{
 			Var1: DataRequest.Var1,
@@ -58,8 +58,9 @@ func (u *UseCaseBorda) SetBorda(DataRequest *models.BordaJson) (*models.BordaJso
 	}
 
 	Data, err := u.Repository.SetBorda(&models.BordaDb{
-		Name: DataRequest.Name,
-		Data: Borda,
+		UserId: UserId,
+		Name:   DataRequest.Name,
+		Data:   Borda,
 	})
 	if err != nil {
 		fmt.Println("UseCaseBorda SetBorda", err)

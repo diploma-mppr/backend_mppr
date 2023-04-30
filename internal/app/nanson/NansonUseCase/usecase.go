@@ -17,8 +17,8 @@ func NewUseCaseNanson(Repository nanson.Repository) *UseCaseNanson {
 	}
 }
 
-func (u *UseCaseNanson) GetNanson(id int) (*models.NansonJson, error) {
-	Data, err := u.Repository.GetNanson(id)
+func (u *UseCaseNanson) GetNanson(id int, UserId int) (*models.NansonJson, error) {
+	Data, err := u.Repository.GetNanson(id, UserId)
 	if err != nil {
 		fmt.Println("UseCaseNanson GetNanson", err)
 		return nil, err
@@ -43,7 +43,7 @@ func (u *UseCaseNanson) GetNanson(id int) (*models.NansonJson, error) {
 	return DataResponse, nil
 }
 
-func (u *UseCaseNanson) SetNanson(DataRequest *models.NansonJson) (*models.NansonJson, error) {
+func (u *UseCaseNanson) SetNanson(DataRequest *models.NansonJson, UserId int) (*models.NansonJson, error) {
 	Nanson, err := json.Marshal(
 		models.Nanson{
 			Var1: DataRequest.Var1,
@@ -58,8 +58,9 @@ func (u *UseCaseNanson) SetNanson(DataRequest *models.NansonJson) (*models.Nanso
 	}
 
 	Data, err := u.Repository.SetNanson(&models.NansonDb{
-		Name: DataRequest.Name,
-		Data: Nanson,
+		UserId: UserId,
+		Name:   DataRequest.Name,
+		Data:   Nanson,
 	})
 	if err != nil {
 		fmt.Println("UseCaseNanson SetNanson", err)

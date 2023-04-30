@@ -17,8 +17,8 @@ func NewUseCasePointScore(Repository pointScore.Repository) *UseCasePointScore {
 	}
 }
 
-func (u *UseCasePointScore) GetPointScore(id int) (*models.PointScoreJson, error) {
-	Data, err := u.Repository.GetPointScore(id)
+func (u *UseCasePointScore) GetPointScore(id int, UserId int) (*models.PointScoreJson, error) {
+	Data, err := u.Repository.GetPointScore(id, UserId)
 	if err != nil {
 		fmt.Println("UseCasePareto GetPointScore", err)
 		return nil, err
@@ -40,7 +40,7 @@ func (u *UseCasePointScore) GetPointScore(id int) (*models.PointScoreJson, error
 	return DataResponse, nil
 }
 
-func (u *UseCasePointScore) SetPointScore(DataRequest *models.PointScoreJson) (*models.PointScoreJson, error) {
+func (u *UseCasePointScore) SetPointScore(DataRequest *models.PointScoreJson, UserId int) (*models.PointScoreJson, error) {
 	Pareto, err := json.Marshal(
 		models.PointScore{
 			Var1: DataRequest.Var1,
@@ -52,8 +52,9 @@ func (u *UseCasePointScore) SetPointScore(DataRequest *models.PointScoreJson) (*
 	}
 
 	Data, err := u.Repository.SetPointScore(&models.PointScoreDb{
-		Name: DataRequest.Name,
-		Data: Pareto,
+		UserId: UserId,
+		Name:   DataRequest.Name,
+		Data:   Pareto,
 	})
 	if err != nil {
 		fmt.Println("UseCasePareto SetPointScore", err)

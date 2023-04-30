@@ -3,8 +3,10 @@ package PointScoreHandler
 import (
 	"encoding/json"
 	"fmt"
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/middleware"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/models"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/pointScore"
+	"github.com/pkg/errors"
 
 	"gitgub.com/diploma-mppr/backend_mppr/tools"
 	"github.com/labstack/echo/v4"
@@ -24,6 +26,11 @@ func NewHandlerPointScore(useCase pointScore.UseCase) *HandlerPointScore {
 }
 
 func (h HandlerPointScore) GetPointScore(ctx echo.Context) error {
+	user := middleware.GetUserFromCtx(ctx)
+	if user == nil {
+		return tools.CustomError(ctx, errors.Errorf("пользователь не в системе"), 0, "ошибка при запросе пользователя")
+	}
+
 	id := ctx.QueryParam("id")
 	fmt.Println("Param: ", id, " ", reflect.TypeOf(id))
 	che, err := strconv.ParseInt(id, 10, 64)
@@ -32,7 +39,9 @@ func (h HandlerPointScore) GetPointScore(ctx echo.Context) error {
 		return tools.CustomError(ctx, err, 0, "ParseInt")
 	}
 
-	data, err := h.UseCase.GetPointScore(int(che))
+	fmt.Println(user.Id, che)
+
+	data, err := h.UseCase.GetPointScore(int(che), int(user.Id))
 	if err != nil {
 		fmt.Println("HandlerPareto GetPareto", err)
 		return tools.CustomError(ctx, err, 1, "UseCase")
@@ -49,6 +58,11 @@ func (h HandlerPointScore) GetPointScore(ctx echo.Context) error {
 }
 
 func (h HandlerPointScore) SetPointScore(ctx echo.Context) error {
+	user := middleware.GetUserFromCtx(ctx)
+	if user == nil {
+		return tools.CustomError(ctx, errors.Errorf("пользователь не в системе"), 0, "ошибка при запросе пользователя")
+	}
+
 	data := models.PointScoreJson{}
 	if err := ctx.Bind(&data); err != nil {
 		fmt.Println("HandlerPareto SetPointScore", err)
@@ -57,7 +71,7 @@ func (h HandlerPointScore) SetPointScore(ctx echo.Context) error {
 
 	fmt.Println(data)
 
-	task, err := h.UseCase.SetPointScore(&data)
+	task, err := h.UseCase.SetPointScore(&data, int(user.Id))
 	if err != nil {
 		fmt.Println("HandlerPareto SetPointScore", err)
 		tools.CustomError(ctx, err, 1, "Usecase")

@@ -17,8 +17,8 @@ func NewUseCaseWeightedSum(Repository weightedSum.Repository) *UseCaseWeightedSu
 	}
 }
 
-func (u *UseCaseWeightedSum) GetWeightedSum(id int) (*models.WeightedSumJson, error) {
-	Data, err := u.Repository.GetWeightedSum(id)
+func (u *UseCaseWeightedSum) GetWeightedSum(id int, UserId int) (*models.WeightedSumJson, error) {
+	Data, err := u.Repository.GetWeightedSum(id, UserId)
 	if err != nil {
 		fmt.Println("UseCaseWeightedSum GetWeightedSum", err)
 		return nil, err
@@ -44,7 +44,7 @@ func (u *UseCaseWeightedSum) GetWeightedSum(id int) (*models.WeightedSumJson, er
 	return DataResponse, nil
 }
 
-func (u *UseCaseWeightedSum) SetWeightedSum(DataRequest *models.WeightedSumJson) (*models.WeightedSumJson, error) {
+func (u *UseCaseWeightedSum) SetWeightedSum(DataRequest *models.WeightedSumJson, UserId int) (*models.WeightedSumJson, error) {
 	WeightedSum, err := json.Marshal(
 		models.WeightedSum{
 			Var1: DataRequest.Var1,
@@ -60,8 +60,9 @@ func (u *UseCaseWeightedSum) SetWeightedSum(DataRequest *models.WeightedSumJson)
 	}
 
 	Data, err := u.Repository.SetWeightedSum(&models.WeightedSumDb{
-		Name: DataRequest.Name,
-		Data: WeightedSum,
+		UserId: UserId,
+		Name:   DataRequest.Name,
+		Data:   WeightedSum,
 	})
 	if err != nil {
 		fmt.Println("UseCaseWeightedSum SetWeightedSum", err)

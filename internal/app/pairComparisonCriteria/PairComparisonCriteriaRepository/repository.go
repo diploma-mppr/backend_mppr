@@ -16,10 +16,10 @@ func NewRepositoryPairComparisonCriteria(db *pgx.ConnPool) *RepositoryPairCompar
 	}
 }
 
-func (r *RepositoryPairComparisonCriteria) GetPairComparisonCriteria(id int) (*models.PairComparisonCriteriaDb, error) {
+func (r *RepositoryPairComparisonCriteria) GetPairComparisonCriteria(id int, UserId int) (*models.PairComparisonCriteriaDb, error) {
 	DataResponse := &models.PairComparisonCriteriaDb{}
-	sql := `select id, name, data from "method" where id=$1`
-	err := r.DB.QueryRow(sql, id).Scan(
+	sql := `select "id", "name", "data" from "method" where "id" = $1 and "user_id" = $2`
+	err := r.DB.QueryRow(sql, id, UserId).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,
@@ -33,8 +33,8 @@ func (r *RepositoryPairComparisonCriteria) GetPairComparisonCriteria(id int) (*m
 
 func (r *RepositoryPairComparisonCriteria) SetPairComparisonCriteria(DataRequest *models.PairComparisonCriteriaDb) (*models.PairComparisonCriteriaDb, error) {
 	DataResponse := &models.PairComparisonCriteriaDb{}
-	sql := `insert into "method" (name, data, method_name) values ($1, $2, $3, 'pairComparisonCriteria') returning id, name, data;`
-	err := r.DB.QueryRow(sql, DataRequest.Name, DataRequest.Data).Scan(
+	sql := `insert into "method" ("user_id", "name", "data", "method_name") values ($1, $2, $3, 'pairComparisonCriteria') returning id, name, data;`
+	err := r.DB.QueryRow(sql, DataRequest.UserId, DataRequest.Name, DataRequest.Data).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,
