@@ -35,9 +35,6 @@ func (u *UseCaseBorda) GetBorda(id int, UserId int) (*models.BordaJson, error) {
 		Id:   Data.Id,
 		Name: Data.Name,
 		Var1: Borda.Var1,
-		Var2: Borda.Var2,
-		Var3: Borda.Var3,
-		Var4: Borda.Var4,
 	}
 
 	return DataResponse, nil
@@ -47,9 +44,6 @@ func (u *UseCaseBorda) SetBorda(DataRequest *models.BordaJson, UserId int) (*mod
 	Borda, err := json.Marshal(
 		models.Borda{
 			Var1: DataRequest.Var1,
-			Var2: DataRequest.Var2,
-			Var3: DataRequest.Var3,
-			Var4: DataRequest.Var4,
 		},
 	)
 	if err != nil {
@@ -78,9 +72,6 @@ func (u *UseCaseBorda) SetBorda(DataRequest *models.BordaJson, UserId int) (*mod
 		Id:   Data.Id,
 		Name: Data.Name,
 		Var1: Borda1.Var1,
-		Var2: Borda1.Var2,
-		Var3: Borda1.Var3,
-		Var4: Borda1.Var4,
 	}
 
 	return DataResponse, nil
@@ -90,9 +81,6 @@ func (u *UseCaseBorda) UpdateBorda(DataRequest *models.BordaJson) (*models.Borda
 	Borda, err := json.Marshal(
 		models.Borda{
 			Var1: DataRequest.Var1,
-			Var2: DataRequest.Var2,
-			Var3: DataRequest.Var3,
-			Var4: DataRequest.Var4,
 		},
 	)
 	if err != nil {
@@ -120,9 +108,6 @@ func (u *UseCaseBorda) UpdateBorda(DataRequest *models.BordaJson) (*models.Borda
 		Id:   Data.Id,
 		Name: Data.Name,
 		Var1: Borda1.Var1,
-		Var2: Borda1.Var2,
-		Var3: Borda1.Var3,
-		Var4: Borda1.Var4,
 	}
 
 	return DataResponse, nil

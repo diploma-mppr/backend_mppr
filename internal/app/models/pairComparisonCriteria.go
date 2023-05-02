@@ -23,14 +23,14 @@ type PairComparisonCriteria struct {
 type PairComparisonCriteriaJson struct {
 	Id    int       `json:"id"`
 	Name  string    `json:"name"`
-	Var1  []float64 `json:"var_1"`
-	Var2  []float64 `json:"var_2"`
-	Var3  []float64 `json:"var_3"`
-	Var4  []float64 `json:"var_4"`
-	Var5  []float64 `json:"var_5"`
-	Var6  []float64 `json:"var_6"`
-	Var7  []float64 `json:"var_7"`
-	Var8  []float64 `json:"var_8"`
-	Var9  []float64 `json:"var_9"`
-	Var10 []float64 `json:"var_10"`
+	Var1  []float64 `json:"var1"`
+	Var2  []float64 `json:"var2"`
+	Var3  []float64 `json:"var3"`
+	Var4  []float64 `json:"var4"`
+	Var5  []float64 `json:"var5"`
+	Var6  []float64 `json:"var6"`
+	Var7  []float64 `json:"var7"`
+	Var8  []float64 `json:"var8"`
+	Var9  []float64 `json:"var9"`
+	Var10 []float64 `json:"var10"`
 }
