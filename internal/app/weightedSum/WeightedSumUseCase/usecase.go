@@ -82,8 +82,8 @@ func (u *UseCaseWeightedSum) SetWeightedSum(DataRequest *models.WeightedSumJson,
 		Var1: WeightedSum1.Var1,
 		Var2: WeightedSum1.Var2,
 		Var3: WeightedSum1.Var3,
-		Var4: WeightedSum1.Var2,
-		Var5: WeightedSum1.Var3,
+		Var4: WeightedSum1.Var4,
+		Var5: WeightedSum1.Var5,
 	}
 
 	return DataResponse, nil

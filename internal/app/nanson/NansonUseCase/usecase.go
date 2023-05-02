@@ -35,9 +35,6 @@ func (u *UseCaseNanson) GetNanson(id int, UserId int) (*models.NansonJson, error
 		Id:   Data.Id,
 		Name: Data.Name,
 		Var1: Nanson.Var1,
-		Var2: Nanson.Var2,
-		Var3: Nanson.Var3,
-		Var4: Nanson.Var4,
 	}
 
 	return DataResponse, nil
@@ -47,9 +44,6 @@ func (u *UseCaseNanson) SetNanson(DataRequest *models.NansonJson, UserId int) (*
 	Nanson, err := json.Marshal(
 		models.Nanson{
 			Var1: DataRequest.Var1,
-			Var2: DataRequest.Var2,
-			Var3: DataRequest.Var3,
-			Var4: DataRequest.Var4,
 		},
 	)
 	if err != nil {
@@ -78,9 +72,6 @@ func (u *UseCaseNanson) SetNanson(DataRequest *models.NansonJson, UserId int) (*
 		Id:   Data.Id,
 		Name: Data.Name,
 		Var1: Nanson1.Var1,
-		Var2: Nanson1.Var2,
-		Var3: Nanson1.Var3,
-		Var4: Nanson1.Var4,
 	}
 
 	return DataResponse, nil
@@ -90,9 +81,6 @@ func (u *UseCaseNanson) UpdateNanson(DataRequest *models.NansonJson) (*models.Na
 	Nanson, err := json.Marshal(
 		models.Nanson{
 			Var1: DataRequest.Var1,
-			Var2: DataRequest.Var2,
-			Var3: DataRequest.Var3,
-			Var4: DataRequest.Var4,
 		},
 	)
 	if err != nil {
@@ -120,9 +108,6 @@ func (u *UseCaseNanson) UpdateNanson(DataRequest *models.NansonJson) (*models.Na
 		Id:   Data.Id,
 		Name: Data.Name,
 		Var1: Nanson1.Var1,
-		Var2: Nanson1.Var2,
-		Var3: Nanson1.Var3,
-		Var4: Nanson1.Var4,
 	}
 
 	return DataResponse, nil
