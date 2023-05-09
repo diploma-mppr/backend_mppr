@@ -91,6 +91,7 @@ func (u *UseCaseNanson) UpdateNanson(DataRequest *models.NansonJson) (*models.Na
 	Data, err := u.Repository.UpdateNanson(&models.NansonDb{
 		Id:   DataRequest.Id,
 		Data: Nanson,
+		Name: DataRequest.Name,
 	})
 	if err != nil {
 		fmt.Println("UseCaseNanson UpdateNanson", err)

@@ -90,6 +90,7 @@ func (u *UseCaseBaseCriteria) UpdateBaseCriteria(DataRequest *models.BaseCriteri
 
 	Data, err := u.Repository.UpdateBaseCriteria(&models.BaseCriteriaDb{
 		Id:   DataRequest.Id,
+		Name: DataRequest.Name,
 		Data: BasicCriteria,
 	})
 	if err != nil {

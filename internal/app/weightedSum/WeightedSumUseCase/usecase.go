@@ -107,6 +107,7 @@ func (u *UseCaseWeightedSum) UpdateWeightedSum(DataRequest *models.WeightedSumJs
 	Data, err := u.Repository.UpdateWeightedSum(&models.WeightedSumDb{
 		Id:   DataRequest.Id,
 		Data: WeightedSum,
+		Name: DataRequest.Name,
 	})
 	if err != nil {
 		fmt.Println("UseCaseWeightedSum UpdateWeightedSum", err)

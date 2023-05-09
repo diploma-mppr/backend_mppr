@@ -91,6 +91,7 @@ func (u *UseCaseBorda) UpdateBorda(DataRequest *models.BordaJson) (*models.Borda
 	Data, err := u.Repository.UpdateBorda(&models.BordaDb{
 		Id:   DataRequest.Id,
 		Data: Borda,
+		Name: DataRequest.Name,
 	})
 	if err != nil {
 		fmt.Println("UseCaseBorda UpdateBorda", err)

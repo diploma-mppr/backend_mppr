@@ -91,6 +91,7 @@ func (u *UseCasePointScore) UpdatePointScore(DataRequest *models.PointScoreJson)
 	Data, err := u.Repository.UpdatePointScore(&models.PointScoreDb{
 		Id:   DataRequest.Id,
 		Data: Pareto,
+		Name: DataRequest.Name,
 	})
 	if err != nil {
 		fmt.Println("UseCasePareto UpdatePointScore", err)

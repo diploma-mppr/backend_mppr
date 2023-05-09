@@ -49,8 +49,8 @@ func (r *RepositoryPareto) SetPareto(DataRequest *models.ParetoDb) (*models.Pare
 
 func (r *RepositoryPareto) UpdatePareto(DataRequest *models.ParetoDb) (*models.ParetoDb, error) {
 	DataResponse := &models.ParetoDb{}
-	sql := `UPDATE "method" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
-	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Id).Scan(
+	sql := `UPDATE "method" SET "data" = $1, "name" = $2 WHERE "id" = $3 and "user_id" = $4 returning id, name, data;`
+	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Name, DataRequest.Id, DataRequest.UserId).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,
@@ -64,8 +64,8 @@ func (r *RepositoryPareto) UpdatePareto(DataRequest *models.ParetoDb) (*models.P
 }
 
 func (r *RepositoryPareto) DeletePareto(DataRequest *models.ParetoDb) error {
-	sql := `DELETE FROM "method" WHERE "id"=$1;`
-	_, err := r.DB.Query(sql, DataRequest.Id)
+	sql := `DELETE FROM "method" WHERE "id" = $1 and "user_id" = $2;`
+	_, err := r.DB.Query(sql, DataRequest.Id, DataRequest.UserId)
 	if err != nil {
 		fmt.Println("RepositoryPareto DeletePareto", err)
 		return err

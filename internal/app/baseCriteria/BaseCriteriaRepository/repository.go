@@ -49,8 +49,8 @@ func (r *RepositoryBaseCriteria) SetBaseCriteria(DataRequest *models.BaseCriteri
 
 func (r *RepositoryBaseCriteria) UpdateBaseCriteria(DataRequest *models.BaseCriteriaDb) (*models.BaseCriteriaDb, error) {
 	DataResponse := &models.BaseCriteriaDb{}
-	sql := `UPDATE "tdata" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
-	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Id).Scan(
+	sql := `UPDATE "method" SET "data" = $1, "name" = $2 WHERE "id"=$3 returning id, name, data;`
+	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Name, DataRequest.Id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,
@@ -64,7 +64,7 @@ func (r *RepositoryBaseCriteria) UpdateBaseCriteria(DataRequest *models.BaseCrit
 }
 
 func (r *RepositoryBaseCriteria) DeleteBaseCriteria(DataRequest *models.BaseCriteriaDb) error {
-	sql := `DELETE FROM "tdata" WHERE "id"=$1;`
+	sql := `DELETE FROM "method" WHERE "id"=$1;`
 	_, err := r.DB.Query(sql, DataRequest.Id)
 	if err != nil {
 		fmt.Println("RepositoryBaseCriteria DeleteBasicCriteria", err)

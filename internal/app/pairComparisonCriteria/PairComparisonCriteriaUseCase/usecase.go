@@ -127,6 +127,7 @@ func (u *UseCasePairComparisonCriteria) UpdatePairComparisonCriteria(DataRequest
 	Data, err := u.Repository.UpdatePairComparisonCriteria(&models.PairComparisonCriteriaDb{
 		Id:   DataRequest.Id,
 		Data: PairComparisonCriteria,
+		Name: DataRequest.Name,
 	})
 	if err != nil {
 		fmt.Println("UseCasePairComparisonCriteria UpdatePairComparisonCriteria", err)

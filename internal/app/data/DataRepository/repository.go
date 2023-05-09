@@ -22,7 +22,7 @@ func (r *RepositoryData) GetAll(UserId int) (*[]models.DataDb, error) {
 	var Data []interface{}
 	Data = append(Data, UserId)
 
-	sql := `select "id", "name", "method_name" from "method" where "user_id" = $1;`
+	sql := `select "id", "name", "method_name" from "method" where "user_id" = $1 ORDER BY "id";`
 	rows, err := r.DB.Query(sql, Data...)
 	if err != nil {
 		fmt.Println("RepositoryData GetAll", err)

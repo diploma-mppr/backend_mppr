@@ -83,7 +83,7 @@ func (u *UseCasePareto) SetPareto(DataRequest *models.ParetoJson, UserId int) (*
 	return DataResponse, nil
 }
 
-func (u *UseCasePareto) UpdatePareto(DataRequest *models.ParetoJson) (*models.ParetoJson, error) {
+func (u *UseCasePareto) UpdatePareto(DataRequest *models.ParetoJson, UserId int) (*models.ParetoJson, error) {
 	Pareto, err := json.Marshal(
 		models.Pareto{
 			Var1: DataRequest.Var1,
@@ -97,8 +97,10 @@ func (u *UseCasePareto) UpdatePareto(DataRequest *models.ParetoJson) (*models.Pa
 	}
 
 	Data, err := u.Repository.UpdatePareto(&models.ParetoDb{
-		Id:   DataRequest.Id,
-		Data: Pareto,
+		Id:     DataRequest.Id,
+		UserId: UserId,
+		Data:   Pareto,
+		Name:   DataRequest.Name,
 	})
 	if err != nil {
 		fmt.Println("UseCasePareto UpdatePareto", err)
@@ -123,9 +125,10 @@ func (u *UseCasePareto) UpdatePareto(DataRequest *models.ParetoJson) (*models.Pa
 	return DataResponse, nil
 }
 
-func (u *UseCasePareto) DeletePareto(DataRequest *models.ParetoJson) error {
+func (u *UseCasePareto) DeletePareto(DataRequest *models.ParetoJson, UserId int) error {
 	err := u.Repository.DeletePareto(&models.ParetoDb{
-		Id: DataRequest.Id,
+		Id:     DataRequest.Id,
+		UserId: UserId,
 	})
 	if err != nil {
 		fmt.Println("UseCasePareto DeletePareto", err)

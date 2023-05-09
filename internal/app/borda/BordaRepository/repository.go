@@ -49,8 +49,8 @@ func (r *RepositoryBorda) SetBorda(DataRequest *models.BordaDb) (*models.BordaDb
 
 func (r *RepositoryBorda) UpdateBorda(DataRequest *models.BordaDb) (*models.BordaDb, error) {
 	DataResponse := &models.BordaDb{}
-	sql := `UPDATE "method" SET "data" = $1 WHERE "id"=$2 returning id, name, data;`
-	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Id).Scan(
+	sql := `UPDATE "method" SET "data" = $1, "name" = $2 WHERE "id"=$3 returning id, name, data;`
+	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Name, DataRequest.Id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,

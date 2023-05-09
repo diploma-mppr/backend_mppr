@@ -86,6 +86,11 @@ func (h HandlerPareto) SetPareto(ctx echo.Context) error {
 }
 
 func (h HandlerPareto) UpdatePareto(ctx echo.Context) error {
+	user := middleware.GetUserFromCtx(ctx)
+	if user == nil {
+		return tools.CustomError(ctx, errors.Errorf("пользователь не в системе"), 0, "ошибка при запросе пользователя")
+	}
+
 	data := models.ParetoJson{}
 	if err := ctx.Bind(&data); err != nil {
 		fmt.Println("HandlerPareto UpdatePareto", err)
@@ -94,7 +99,7 @@ func (h HandlerPareto) UpdatePareto(ctx echo.Context) error {
 
 	fmt.Println(data)
 
-	task, err := h.UseCase.UpdatePareto(&data)
+	task, err := h.UseCase.UpdatePareto(&data, int(user.Id))
 	if err != nil {
 		fmt.Println("HandlerPareto UpdatePareto", err)
 		tools.CustomError(ctx, err, 1, "UseCase")
@@ -110,6 +115,11 @@ func (h HandlerPareto) UpdatePareto(ctx echo.Context) error {
 }
 
 func (h HandlerPareto) DeletePareto(ctx echo.Context) error {
+	user := middleware.GetUserFromCtx(ctx)
+	if user == nil {
+		return tools.CustomError(ctx, errors.Errorf("пользователь не в системе"), 0, "ошибка при запросе пользователя")
+	}
+
 	data := models.ParetoJson{}
 	if err := ctx.Bind(&data); err != nil {
 		fmt.Println("HandlerPareto DeletePareto", err)
@@ -118,7 +128,7 @@ func (h HandlerPareto) DeletePareto(ctx echo.Context) error {
 
 	fmt.Println(data)
 
-	err := h.UseCase.DeletePareto(&data)
+	err := h.UseCase.DeletePareto(&data, int(user.Id))
 	if err != nil {
 		fmt.Println("HandlerPareto DeletePareto", err)
 		tools.CustomError(ctx, err, 1, "DeletePareto")
