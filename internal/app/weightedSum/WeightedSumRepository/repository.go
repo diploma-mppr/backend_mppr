@@ -50,7 +50,7 @@ func (r *RepositoryWeightedSum) SetWeightedSum(DataRequest *models.WeightedSumDb
 func (r *RepositoryWeightedSum) UpdateWeightedSum(DataRequest *models.WeightedSumDb) (*models.WeightedSumDb, error) {
 	DataResponse := &models.WeightedSumDb{}
 	sql := `UPDATE "method" SET "data" = $1, "name" = $2 WHERE "id"=$3 returning id, name, data;`
-	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Id).Scan(
+	err := r.DB.QueryRow(sql, DataRequest.Data, DataRequest.Name, DataRequest.Id).Scan(
 		&DataResponse.Id,
 		&DataResponse.Name,
 		&DataResponse.Data,

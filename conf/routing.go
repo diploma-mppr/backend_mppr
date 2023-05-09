@@ -13,6 +13,7 @@ import (
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/weightedSum/WeightedSumHandler"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type ServerHandlers struct {
@@ -38,6 +39,8 @@ func (sh *ServerHandlers) ConfigureRouting(router *echo.Echo, mw *middleware.Com
 	mwChain := []echo.MiddlewareFunc{
 		mw.AuthMiddleware,
 	}
+
+	router.GET("metrics", echo.WrapHandler(promhttp.Handler()))
 
 	router.GET("/api/get_all", sh.HandlerData.GetAll, mwChain...)
 	//pareto

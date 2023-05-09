@@ -14,6 +14,7 @@ import (
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/data/DataHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/data/DataRepository"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/data/DataUseCase"
+	"gitgub.com/diploma-mppr/backend_mppr/internal/app/metrics"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/middleware"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/nanson/NansonHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/nanson/NansonRepository"
@@ -84,6 +85,13 @@ func main() {
 	authHandler := AuthHandler.NewHandlerAuth(authUcase, jwtManager)
 
 	router := echo.New()
+
+	m, err := metrics.CreateNewMetric("main")
+	if err != nil {
+		panic(err)
+	}
+
+	router.Use(m.CollectMetrics)
 
 	serverRouting := conf.ServerHandlers{
 		HandlerData:                   HandlerData,
