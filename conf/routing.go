@@ -31,7 +31,7 @@ type ServerHandlers struct {
 func (sh *ServerHandlers) ConfigureRouting(router *echo.Echo, mw *middleware.CommonMiddleware) {
 	router.Use(echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
 		AllowCredentials: true,
-		AllowOrigins:     []string{"http://localhost:3000", "http://127.0.0.1:3000"},                                   // "http://127.0.0.1:3000", "http://localhost:3001", "http://localhost:3000", "http://127.0.0.1:3001"
+		AllowOrigins:     []string{"https://study-ai.online", "http://localhost:3000", "http://127.0.0.1:3000"},        // "http://127.0.0.1:3000", "http://localhost:3001", "http://localhost:3000", "http://127.0.0.1:3001"
 		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderSetCookie}, // , echo.HeaderSetCookie
 		AllowMethods:     []string{echo.GET, echo.POST},
 		MaxAge:           86400,
