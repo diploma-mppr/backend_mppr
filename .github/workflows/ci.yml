@@ -31,14 +31,13 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
+            cd infrastructure/
+            sudo docker-compose stop
+            sudo docker-compose down
             df -h
-#            cd infrastructure/
-#            sudo docker-compose stop
-#            sudo docker-compose down
-#            df -h
-#            sudo docker rm -f $(sudo docker ps -aq)
-#            sudo docker rmi -f $(sudo docker images -a yutfut/back)
-#            df -h
-#            echo BACK_VERSION=${GITHUB_SHA::8} >> .env
-#            sudo docker-compose up -d
-#            df -h
+            sudo docker rm -f $(sudo docker ps -aq)
+            sudo docker rmi -f $(sudo docker images -a yutfut/back_mppr)
+            df -h
+            echo BACK_MPPR_VERSION=${GITHUB_SHA::8} >> .env
+            sudo docker-compose up -d
+            df -h
