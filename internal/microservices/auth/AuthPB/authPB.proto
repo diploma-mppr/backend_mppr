@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+// protoc --go_out=. --go_opt=paths=source_relative \
+//    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+//    internal/microservice/chee/microservice.proto
+
+option go_package = "./;authpb";
+
+package authpb;
+
+message UserS {
+  string Username = 1;
+  string Password = 2;
+}
+
+message UserId {
+  uint64 UserId = 1;
+}
+
+message ResponseUser {
+  uint64 Id = 1;
+  string Username = 2;
+}
+
+service AuthMicroservice {
+  rpc Register (UserS) returns (ResponseUser) {}
+  rpc Login (UserS) returns (ResponseUser) {}
+  rpc GetUserById(UserId) returns (ResponseUser) {}
+}

@@ -1,15 +1,17 @@
 package AuthHandler
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"gitgub.com/diploma-mppr/backend_mppr/internal/app/auth"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/middleware"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/models"
+	authpb "gitgub.com/diploma-mppr/backend_mppr/internal/microservices/auth/AuthPB"
 	"gitgub.com/diploma-mppr/backend_mppr/tools"
 	"gitgub.com/diploma-mppr/backend_mppr/tools/authManager"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
+	"google.golang.org/grpc"
 	"net"
 	"net/http"
 	"strconv"
@@ -21,13 +23,11 @@ const (
 )
 
 type HandlerAuth struct {
-	UseCase     auth.UseCase
 	AuthManager authManager.AuthManager
 }
 
-func NewHandlerAuth(usecase auth.UseCase, authManager authManager.AuthManager) *HandlerAuth {
+func NewHandlerAuth(authManager authManager.AuthManager) *HandlerAuth {
 	return &HandlerAuth{
-		UseCase:     usecase,
 		AuthManager: authManager,
 	}
 }
@@ -49,6 +49,10 @@ type OK struct {
 	Message string `json:"message"`
 }
 
+var (
+	che authpb.AuthMicroserviceClient
+)
+
 func (h HandlerAuth) Register(ctx echo.Context) error {
 	if middleware.GetUserFromCtx(ctx) != nil {
 		return tools.CustomError(ctx, errors.Errorf("пользователь находится в системе"), 0, "пользователь уже зарегестрирован")
@@ -62,12 +66,18 @@ func (h HandlerAuth) Register(ctx echo.Context) error {
 
 	fmt.Println(UserRequest)
 
-	User, err := h.UseCase.Register(&models.UserJson{Username: UserRequest.Username, Password: UserRequest.Password})
+	grcpConn, err := grpc.Dial(
+		"127.0.0.1:8001",
+		grpc.WithInsecure(),
+	)
 	if err != nil {
-		return tools.CustomError(ctx, err, 2, "ошибка при регистрации")
+		fmt.Println("cant connect to grpc")
 	}
+	defer grcpConn.Close()
+	che = authpb.NewAuthMicroserviceClient(grcpConn)
+	User, err := che.Register(context.Background(), &authpb.UserS{Username: UserRequest.Username, Password: UserRequest.Password})
 
-	token, err := h.AuthManager.CreateToken(authManager.NewTokenPayload(User.Id)) // подставить id пользователя полученного из usecase
+	token, err := h.AuthManager.CreateToken(authManager.NewTokenPayload(models.UserId(User.GetId()))) // подставить id пользователя полученного из usecase
 	if err != nil {
 		return tools.CustomError(ctx, err, 3, "отрыгнул jsw token или что то связанное с ним")
 	}
@@ -77,7 +87,7 @@ func (h HandlerAuth) Register(ctx echo.Context) error {
 
 	ctx.SetCookie(tokenCookie)
 
-	result, _ := json.Marshal(User)
+	result, _ := json.Marshal(models.ResponseUserJson{Id: models.UserId(User.GetId()), Username: User.GetUsername()})
 	ctx.Response().Header().Add(echo.HeaderContentLength, strconv.Itoa(len(result)))
 	return ctx.JSONBlob(http.StatusOK, result)
 }
@@ -93,12 +103,18 @@ func (h HandlerAuth) Login(ctx echo.Context) error {
 		return tools.CustomError(ctx, err, 1, "битый json на логин")
 	}
 
-	User, err := h.UseCase.Login(&models.UserJson{Username: UserRequest.Username, Password: UserRequest.Password})
+	grcpConn, err := grpc.Dial(
+		"127.0.0.1:8001",
+		grpc.WithInsecure(),
+	)
 	if err != nil {
-		return tools.CustomError(ctx, err, 2, "ошибка при логине")
+		fmt.Println("cant connect to grpc")
 	}
+	defer grcpConn.Close()
+	che = authpb.NewAuthMicroserviceClient(grcpConn)
+	User, err := che.Login(context.Background(), &authpb.UserS{Username: UserRequest.Username, Password: UserRequest.Password})
 
-	token, err := h.AuthManager.CreateToken(authManager.NewTokenPayload(User.Id)) // подставить id пользователя полученного из usecase
+	token, err := h.AuthManager.CreateToken(authManager.NewTokenPayload(models.UserId(User.GetId()))) // подставить id пользователя полученного из usecase
 	if err != nil {
 		return tools.CustomError(ctx, err, 2, "отрыгнул jsw token или что то связанное с ним")
 	}
@@ -108,7 +124,7 @@ func (h HandlerAuth) Login(ctx echo.Context) error {
 
 	ctx.SetCookie(tokenCookie)
 
-	result, _ := json.Marshal(User)
+	result, _ := json.Marshal(models.ResponseUserJson{Id: models.UserId(User.GetId()), Username: User.GetUsername()})
 	ctx.Response().Header().Add(echo.HeaderContentLength, strconv.Itoa(len(result)))
 	return ctx.JSONBlob(http.StatusOK, result)
 }
@@ -137,12 +153,18 @@ func (h HandlerAuth) GetUserById(ctx echo.Context) error {
 		return tools.CustomError(ctx, errors.Errorf("пользователь не в системе"), 0, "ошибка при запросе пользователя")
 	}
 
-	user1, err := h.UseCase.GetUserById(user.Id)
-	if user == nil {
-		return tools.CustomError(ctx, err, 0, "ошибка при получении пользователя")
+	grcpConn, err := grpc.Dial(
+		"127.0.0.1:8001",
+		grpc.WithInsecure(),
+	)
+	if err != nil {
+		fmt.Println("cant connect to grpc")
 	}
+	defer grcpConn.Close()
+	che = authpb.NewAuthMicroserviceClient(grcpConn)
+	User, err := che.GetUserById(context.Background(), &authpb.UserId{UserId: uint64(user.Id)})
 
-	result, _ := json.Marshal(user1)
+	result, _ := json.Marshal(models.ResponseUserJson{Id: models.UserId(User.GetId()), Username: User.GetUsername()})
 	ctx.Response().Header().Add(echo.HeaderContentLength, strconv.Itoa(len(result)))
 	return ctx.JSONBlob(http.StatusOK, result)
 }

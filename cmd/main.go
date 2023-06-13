@@ -3,8 +3,6 @@ package main
 import (
 	"gitgub.com/diploma-mppr/backend_mppr/conf"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/auth/AuthHandler"
-	"gitgub.com/diploma-mppr/backend_mppr/internal/app/auth/AuthRepository"
-	"gitgub.com/diploma-mppr/backend_mppr/internal/app/auth/AuthUseCase"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/baseCriteria/BaseCriteriaHandler"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/baseCriteria/BaseCriteriaRepository"
 	"gitgub.com/diploma-mppr/backend_mppr/internal/app/baseCriteria/BaseCriteriaUseCase"
@@ -80,9 +78,7 @@ func main() {
 
 	jwtManager := jwtManager.NewJwtManager()
 
-	authRepo := AuthRepository.NewRepositoryAuth(pgxManager)
-	authUcase := AuthUseCase.NewUseCaseAuth(authRepo)
-	authHandler := AuthHandler.NewHandlerAuth(authUcase, jwtManager)
+	authHandler := AuthHandler.NewHandlerAuth(jwtManager)
 
 	router := echo.New()
 
